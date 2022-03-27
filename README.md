@@ -1,3 +1,3 @@
 # WatzChatty
 This is a WebRTC (chatting)
-+>add inside 'file' folder in static folder
++>add 'file' folder in 'static' folder
