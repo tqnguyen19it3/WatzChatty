@@ -1,0 +1,54 @@
+{%  extends "base.html" %}
+{% block title %}Đăng nhập{% endblock title %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style_rg_lg.css') }}">
+{% endblock css %}
+
+{% block content %}
+<div class="wrapper">
+    <section class="form login">
+      <header>Đăng Nhập WatzChatty</header>
+      <!-- <p id="text" class="text-center" style="display:block; font-weight: 500; color:red; margin-top: 10px;">WARNING! Caps lock is on.</p> -->
+        <form method="POST" action="" enctype="multipart/form-data" autocomplete="on">
+            {{ form.csrf_token }}
+            <div class="field input">
+                {{ form.email.label }}
+                {% if form.email.errors %}
+                      {{ form.email(class="form-control is-invalid") }}
+                      <div class="invalid-feedback">
+                        {% for error in form.email.errors %}
+                          <span class="text-center" style="color: red;"><strong>Lỗi!</strong> {{ error }}</span>
+                        {% endfor %}
+                      </div>
+                {% else %}
+                    {{ form.email }}
+                {% endif %}
+            </div>
+            <div class="field input pw">
+                {{ form.password.label }}
+                {% if form.password.errors %}
+                      {{ form.password(class="form-control is-invalid") }}
+                      <div class="invalid-feedback">
+                        {% for error in form.password.errors %}
+                          <span class="text-center" style="color: red;"><strong>Lỗi!</strong> {{ error }}</span>
+                        {% endfor %}
+                      </div>
+                {% else %}
+                    {{ form.password }}
+                {% endif %}
+              <i class="fas fa-eye password"></i>
+            </div>
+            <div class="field button">
+                {{ form.submit }}
+            </div>
+        </form>
+        <div class="text-center"><a href="" style="color: black;"><i class="fa fa-google"></i></a> | <a href="" style="color: black;"><i class="fa fa-facebook-square"></i></a> | <a href="" style="color: black;"><i class="fa fa-instagram"></i></a></div>
+        <div class="link">Bạn chưa đăng ký? <a href="{{ ('/auth/sign-up') }}" style="margin-left: 5px;">Đăng ký</a></div>
+    </section>
+</div>
+{% endblock content %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='js/password_show_hide.js') }}"></script>
+{% endblock js %}

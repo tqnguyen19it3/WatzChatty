@@ -1,0 +1,248 @@
+{% extends "base.html" %}
+{% block title %}{{title}}{% endblock title %}
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<style>
+    video{
+        height: 360px;
+        max-width: 480px;
+    }
+</style>
+{% endblock css %}
+{% block content %}
+<div class="container">
+
+    <h5>Video call</h5>
+    <div class="d-flex">
+        <div class="col-6">
+            <h5>My video</h5>
+            <video muted id="localVideo">
+
+            </video>
+        </div>
+    </div>
+    <div id="videoGrid">
+        
+    </div>
+    <div class="col-12 d-flex justify-content-center">
+        <button onclick="toggle_camera()" id="btn_toggle_video" class="btn btn-muted mx-1" onclick="toggleVideo()"><span class="material-icons">videocam</span></button>
+        <button onclick="toggle_mic()" id="btn_toggle_mic" class="btn btn-muted mx-1"><span class="material-icons">mic</span></button>
+        <button onclick="stop_call()" class="btn btn-muted mx-1"><span class="material-icons">stop</span></button>
+    </div>
+</div>
+{% endblock content %}
+{% block js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
+<script type="text/javascript" charset="utf-8">
+    const room_id = "{{room_id}}";
+
+    const localVideo = document.getElementById('localVideo');
+    const videoGrid = document.getElementById('videoGrid') 
+    var localStream;
+    var peers = {}
+    var peerId = "{{current_user._id}}";
+    var camera_enable = true;
+    var mic_enable = true;
+
+    navigator.getUserMedia = (
+        navigator.getUserMedia ||
+        navigator.webkitGetUserMedia ||
+        navigator.mozGetUserMedia ||
+        navigator.msGetUserMedia
+    );
+
+    if (typeof navigator.mediaDevices.getUserMedia === 'undefined') {
+        navigator.getUserMedia({
+            video: true,
+            audio: true
+        }, gotLocalMediaStream, handleLocalMediaStreamError);
+    } else {
+        navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: true
+        }).then(gotLocalMediaStream).catch(handleLocalMediaStreamError);
+    }
+
+    function gotLocalMediaStream(mediaStream) {
+        addVideoStream(localVideo, mediaStream, peerId)
+        localStream = mediaStream
+        console.log("Cam is ok")
+    }
+    function handleLocalMediaStreamError(){
+        console.log("Cam isn't ok")
+
+    }
+
+    const myPeer = new Peer(peerId)
+    var socket = io();
+
+    $(window).on("unload", function(e) {
+        socket.disconnect();
+        return true
+    });
+
+    myPeer.on('open', id => {
+        socket.emit('join', room_id, id);
+        console.log("My ID "+peerId);
+    })
+
+    myPeer.on('call', call => {
+
+        call.answer(localStream)
+        console.log("Call from")
+        console.log(call)
+        const video = document.createElement('video');
+        call.on('stream', userVideoStream => {
+            addVideoStream(video, userVideoStream, call.peer)
+        })
+        call.on('close', () => {
+            $(video).parent().remove();
+        })
+        peers[call.peer] = call;
+
+    })
+
+    socket.on('connect', function() {
+        socket.on('disconnect', function() {
+            socket.emit('leave', room_id, peerId);
+        });
+    });
+    socket.on('disconnect', function() {
+        socket.emit('leave', room_id, peerId);
+    });
+
+    socket.on('user-connected', function(userID){
+        console.log("user_connected "+userID);
+        
+        socket.emit('toggle-stream', room_id, {"type": "cam", "status": camera_enable});
+        socket.emit('toggle-stream', room_id, {"type": "mic", "status": mic_enable});
+        
+        if(userID != peerId) {
+            connectToNewUser(userID, localStream)
+        }
+    })
+    socket.on('user-disconnected', function(userID){
+        console.log("user_disconnected "+userID);
+        if(peers[userID]) {
+            peers[userID].close();
+            delete peers[userID];
+            console.log("list current peers "+peers);
+        } 
+    })
+    socket.on('toggle-stream', function(data) {
+        console.log(data)
+        var item = $("#"+data.peerID);
+        if(data.type == "mic") {
+            var mic_off = $('<div class="position-absolute h3" id="mic_off"><span class="badge badge-dark material-icons">mic_off</span></div>')
+            $(mic_off).css('transform', 'translate(450%, 50%)')
+            if(data.status == true) {
+                $(item).children("#mic_off").remove()
+            }
+            else {
+                $(item).prepend(mic_off)
+            }
+        }
+        else if(data.type == "cam") {
+            if(data.status == true) {
+                $(item).find("img").css('transform', '');
+            } else {
+                $(item).find("img").css('transform', 'translateY(150%) translateX(200%)');
+            }
+        }
+    })
+
+    function addVideoStream(video, stream, userId) {
+        console.log("add video "+userId);
+        video.srcObject = stream;
+        video.addEventListener('loadedmetadata', ()=> {
+            video.play();
+        })
+
+        $('#'+userId).remove()
+        const item = $('<div id="'+userId+'" class="video-parent mx-2 my-2 d-inline-block"></div>').append(video)
+        $(videoGrid).append(item);
+        
+        $.ajax({
+            url:"/api/user/"+userId,
+            method:"GET",
+            success:function(data){ 
+                if(data) {
+                    
+                    $(item).find("#username").remove();
+                    $(item).find("#avatar").remove();
+                    const username = $('<p class="text-center font-weight-bold" id="username">'+data.displayname+'</p>')
+                    const avatar = $('<img class="fast_transform avatar-circle-md position-absolute my-2 mx-2" id="avatar" src="/static/'+data.avatar+'">')
+                    $("#"+userId).append(username)
+                    $("#"+userId).prepend(avatar)
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                console.log(xhr);
+            }
+        });
+    }
+    function connectToNewUser(userId, stream) {
+
+        const call = myPeer.call(userId, stream);
+        const video = document.createElement('video');
+        
+
+        call.on('stream', userVideoStream => {
+            addVideoStream(video, userVideoStream, userId);
+        })
+        call.on('close', () => {
+            $(video).parent().remove();
+        })
+
+        peers[userId] = call;
+    }
+    function stop_call() {
+        socket.emit('leave', room_id, peerId);
+        socket.disconnect();
+        myPeer.disconnect();
+        window.close();
+    }
+    function toggle_camera(){ 
+        
+        var vidTrack = localStream.getVideoTracks();
+        if(camera_enable) {
+
+            vidTrack.forEach(track => track.enabled = false);
+            camera_enable = false;
+            $("#btn_toggle_video").addClass("btn-danger")
+            $("#btn_toggle_video").find("span").text("videocam_off")
+        } else {
+            
+            vidTrack.forEach(track => track.enabled = true);
+            camera_enable = true;
+            $("#btn_toggle_video").find("span").text("videocam")
+            $("#btn_toggle_video").removeClass("btn-danger")
+        }
+        
+        socket.emit('toggle-stream', room_id, {"type": "cam", "status": camera_enable});
+    }
+    function toggle_mic(){ 
+        
+        var audioTrack = localStream.getAudioTracks();
+        if(mic_enable) {
+
+            audioTrack.forEach(track => {
+                track.enabled = false
+            });
+            mic_enable = false;
+            $("#btn_toggle_mic").addClass("btn-danger")
+            $("#btn_toggle_mic").find("span").text("mic_off")
+        } else {
+            
+            audioTrack.forEach(track => {
+                track.enabled = true
+            });
+            mic_enable = true;
+            $("#btn_toggle_mic").find("span").text("mic")
+            $("#btn_toggle_mic").removeClass("btn-danger")
+        }
+        socket.emit('toggle-stream', room_id, {"type": "mic", "status": mic_enable});
+    }
+</script>
+{% endblock js %}

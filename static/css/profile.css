@@ -1,0 +1,298 @@
+body {
+    background-color: #f9f9fa
+}
+
+.padding {
+    padding: 3rem !important
+}
+
+.user-card-full {
+    overflow: hidden
+}
+
+.card {
+    border-radius: 5px;
+    -webkit-box-shadow: 0 1px 20px 0 rgba(69, 90, 100, 0.08);
+    box-shadow: 0 1px 20px 0 rgba(69, 90, 100, 0.08);
+    border: none;
+    margin-bottom: 30px
+}
+
+.m-r-0 {
+    margin-right: 0px
+}
+
+.m-l-0 {
+    margin-left: 0px
+}
+
+.user-card-full .user-profile {
+    border-radius: 5px 0 0 5px
+}
+
+.bg-c-lite-green {
+    background: -webkit-gradient(linear, left top, right top, from(#ed6868), to(#2676c9));
+    background: linear-gradient(to right, #2676c9, #ed6868)
+}
+
+.user-profile {
+    padding: 20px 0
+}
+.form-check-inline .form-check-input {
+    position: relative !important;
+}
+.card-block {
+    padding: 1.25rem
+}
+
+.m-b-25 {
+    margin-bottom: 25px
+}
+#avatar_friend{
+    width: 128px;
+    height: 128px;
+    object-fit: cover;
+}
+.img-radius {
+    border-radius: 5px
+}
+.img-avatar{
+    width: 128px;
+    height: 128px;
+    border-radius: 64px;
+    object-fit: cover;
+}
+h6 {
+    font-size: 14px
+}
+
+.card .card-block p {
+    line-height: 25px
+}
+.neo-button {
+    width: 40px;
+    height: 40px;
+    outline: 0 !important;
+    cursor: pointer;
+    color: #fff;
+    font-size: 15px;
+    border: none;
+    margin-right: 10px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #d6d6d6, #ffffff);
+}
+
+.neo-button:active {
+    border-radius: 50%;
+    background: linear-gradient(145deg, #d6d6d6, #ffffff);
+    box-shadow: inset 20px 20px 60px #cacaca, inset -20px -20px 60px #ffffff
+}
+
+.fa-facebook {
+    color: #3b5998
+}
+
+.fa-linkedin {
+    color: #0077b5
+}
+
+.fa-google {
+    color: #dc4e41
+}
+
+.fa-youtube {
+    color: #cd201f
+}
+
+.fa-twitter {
+    color: #55acee
+}
+.name-design{
+    width:100%;
+    white-space: pre-wrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+}
+.email-design{
+    width:100%;
+    white-space: pre-wrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+    margin-bottom: 0;
+}
+@media only screen and (min-width: 1400px) {
+    p {
+        font-size: 14px
+    }
+}
+
+.card-block {
+    padding: 1.25rem
+}
+
+.b-b-default {
+    border-bottom: 1px solid #e0e0e0
+}
+
+.m-b-20 {
+    margin-bottom: 20px
+}
+
+.p-b-5 {
+    padding-bottom: 5px !important
+}
+
+.card .card-block p {
+    line-height: 25px
+}
+
+.m-b-10 {
+    margin-bottom: 10px
+}
+
+.text-muted {
+    color: #919aa3 !important
+    margin-bottom:  0;
+}
+
+.b-b-default {
+    border-bottom: 1px solid #e0e0e0
+}
+
+.f-w-600 {
+    font-weight: 600
+}
+
+.m-b-20 {
+    margin-bottom: 20px
+}
+
+.m-t-40 {
+    margin-top: 20px
+}
+
+.p-b-5 {
+    padding-bottom: 5px !important
+}
+
+.m-b-10 {
+    margin-bottom: 10px
+}
+
+.m-t-40 {
+    margin-top: 20px
+}
+
+.user-card-full .social-link li {
+    display: inline-block
+}
+
+.user-card-full .social-link li a {
+    font-size: 20px;
+    margin: 0 10px 0 0;
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out
+}
+
+/*change 17/01/22*/
+#rain-day-video {
+    opacity: 1;
+    transition: all 2s linear 0s;
+}
+#rain-night-video {
+    opacity: 0;
+    transition: all 2s linear 0s;
+}
+.main-video {
+    z-index: -1;
+    object-fit: cover;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+}
+
+.action {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.action button {
+    margin: 0px 16px;
+    padding: 6px;
+    outline: none;
+    transition: all 0.5s ease 0s;
+}
+.action button:hover {
+    opacity : 0.5;
+}
+/*switch*/
+#switch-btn-pf {
+    background-color: transparent;
+    border: none;
+}
+.action .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 30px;
+}
+/* Hide default HTML checkbox */
+.action .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+/* The slider */
+.action .switch .slider-btn {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: black;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.action .switch .slider-btn:before {
+    position: absolute;
+    border-radius: 50%;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 2px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.action .switch input:checked + .slider-btn {
+    background-color: rgb(243, 169, 82);
+}
+.action .switch input:focus + .slider-btn {
+    box-shadow: 0 0 1px #2196F3;
+}
+.action .switch input:checked + .slider-btn:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+
+/*zoom screen button*/
+#zoom-pf {
+    border: none;
+    background-color: transparent;
+    color: #fff;
+    border-radius: 35%;
+}
